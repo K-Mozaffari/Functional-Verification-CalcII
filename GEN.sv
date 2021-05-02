@@ -2,11 +2,11 @@ package GEN;
 import PK::*;
 class Generator;
 //*****************
-bit[31:0] seed[1:4];
+	bit[31:0] seed[1:4];
 
-Transaction_Tx blueprint[1:4];
-mailbox #(Transaction_Tx) mbx_gen2agt[1:4];
-bit [31:0] crt_pkt[1:4];// the number of pckets on each port 
+	Transaction_Tx blueprint[1:4];
+	mailbox #(Transaction_Tx) mbx_gen2agt[1:4];
+ bit [31:0] crt_pkt[1:4];// the number of pckets on each port 
  extern function new(mailbox #(Transaction_Tx ) mbx_gen2agt[1:4]);
  extern function void build;
  extern task run(bit [31:0] no_pkt);
@@ -34,24 +34,59 @@ endfunction:Generator::build
  
     Transaction_Tx pkt[1:4];
     fork
-	foreach (pkt[i])
-
-		begin 
-		  
-		  repeat (no_pkt) begin
-		  if (!(blueprint[i].randomize())) begin 
-		  $display("%s:%0d: Randomization failed \"%s\"", `__FILE__, `__LINE__, `"blueprint[i].randomize()`"); 
-		  $finish;
-		  end
-			pkt[i]=blueprint[i].copy;
-			mbx_gen2agt[i].put(pkt[i]);
-			crt_pkt[i]++;
-			$display (" Generator:\t\t\t %0dth packet is put on Mailbox[%0d]\n",crt_pkt[i],i);
-			blueprint[i].print(1);
-
-		  end
-		end 
-    join_none
+	begin 
+		repeat (no_pkt) begin
+				if (!(blueprint[1].randomize())) begin 
+					$display("%s:%0d: Randomization failed \"%s\"", `__FILE__, `__LINE__, `"blueprint[1].randomize()`"); 
+					$finish;
+				end
+				pkt[1]=blueprint[1].copy;
+				mbx_gen2agt[1].put(pkt[1]);
+				crt_pkt[1]++;
+				$display (" Generator:\t\t\t %0dth packet is put on Mailbox[%0d]\n",crt_pkt[1],1);
+				blueprint[1].print(1);
+		end
+	end 
+	begin 
+		repeat (no_pkt) begin
+				if (!(blueprint[2].randomize())) begin 
+					$display("%s:%0d: Randomization failed \"%s\"", `__FILE__, `__LINE__, `"blueprint[2].randomize()`"); 
+					$finish;
+				end
+				pkt[2]=blueprint[2].copy;
+				mbx_gen2agt[2].put(pkt[2]);
+				crt_pkt[2]++;
+				$display (" Generator:\t\t\t %0dth packet is put on Mailbox[%0d]\n",crt_pkt[2],2);
+				blueprint[2].print(1);
+		end
+	end 
+	begin 
+		repeat (no_pkt) begin
+				if (!(blueprint[3].randomize())) begin 
+					$display("%s:%0d: Randomization failed \"%s\"", `__FILE__, `__LINE__, `"blueprint[3].randomize()`"); 
+					$finish;
+				end
+				pkt[3]=blueprint[3].copy;
+				mbx_gen2agt[3].put(pkt[3]);
+				crt_pkt[3]++;
+				$display (" Generator:\t\t\t %0dth packet is put on Mailbox[%0d]\n",crt_pkt[3],3);
+				blueprint[3].print(3);
+		end
+	end 
+	begin 
+		repeat (no_pkt) begin
+				if (!(blueprint[4].randomize())) begin 
+					$display("%s:%0d: Randomization failed \"%s\"", `__FILE__, `__LINE__, `"blueprint[4].randomize()`"); 
+					$finish;
+				end
+				pkt[4]=blueprint[4].copy;
+				mbx_gen2agt[4].put(pkt[4]);
+				crt_pkt[4]++;
+				$display (" Generator:\t\t\t %0dth packet is put on Mailbox[%0d]\n",crt_pkt[4],4);
+				blueprint[4].print(4);
+		end
+	end
+    join
 endtask:Generator::run
 
  task Generator::wrap_up;
