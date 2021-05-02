@@ -12,6 +12,7 @@ import PK::*;
   bit [31:0] r2agt_pkt[1:4]='{default:0};
  
   extern function new(mailbox #(Transaction_Tx) mbx_gen2agt[1:4],mbx_agt2drv[1:4],mbx_agt2scb[1:4]);
+  extern task trnsfer2scb_drv(bit[2:0] no_port);
   extern task run ;
   extern task wrap_up;
 
@@ -24,70 +25,33 @@ import PK::*;
 	this.mbx_agt2scb=mbx_agt2scb;
   endfunction
 //---------------------------------------------------------------------------------
+task Agent::trnsfer2scb_drv(bit[2:0] no_port);
+
+	forever begin 
+ 		pkt[no_port]=new;
+		mbx_gen2agt[no_port].get(pkt[no_port]);// receiving packts from generator block
+		r2agt_pkt[no_port]++;//the number of packts received from agent bock
+		$display ("Agent: \t\t \t %0dth packet\t Port[%0d]\n ",r2agt_pkt[no_port],no_port);
+		pkt[no_port].print(no_port);
+		mbx_agt2drv[no_port].put(pkt[no_port]);// put packet on mail box of driver
+		s2drv_pkt[no_port]++;
+		if (pkt[no_port].cmd!=0) mbx_agt2scb[no_port].put(pkt[no_port]);// put packets on scoreboard mailbox
+	end;
+	//pkt[i]=null;
+	 $display("-------------------------------------------------------------------------------------------------\n");
+
+endtask:Agent::trnsfer2scb_drv
+
+
 task Agent::run ;
   $display ("\t\t\t\t Agent is run \n");
     
   fork 
-  
-  begin 
-	forever begin 
- 		pkt[1]=new;
-		mbx_gen2agt[1].get(pkt[1]);// receiving packts from generator block
-		r2agt_pkt[1]++;//the number of packts received from agent bock
-		$display ("Agent: \t\t \t %0dth packet\t Port[%0d]\n ",r2agt_pkt[1],1);
-		pkt[1].print(1);
-		mbx_agt2drv[1].put(pkt[1]);// put packet on mail box of driver
-		s2drv_pkt[1]++;
-		if (pkt[1].cmd!=0) mbx_agt2scb[1].put(pkt[1]);// put packets on scoreboard mailbox
-	end;
-	//pkt[i]=null;
-	 $display("-------------------------------------------------------------------------------------------------\n");
-  end 
-  
-begin 
-	forever begin 
- 		pkt[2]=new;
-		mbx_gen2agt[2].get(pkt[2]);// receiving packts from generator block
-		r2agt_pkt[2]++;//the number of packts received from agent bock
-		$display ("Agent: \t\t \t %0dth packet\t Port[%0d]\n ",r2agt_pkt[2],2);
-		pkt[2].print(1);
-		mbx_agt2drv[2].put(pkt[2]);// put packet on mail box of driver
-		s2drv_pkt[2]++;
-		if (pkt[2].cmd!=0) mbx_agt2scb[2].put(pkt[2]);// put packets on scoreboard mailbox
-	end;
-	//pkt[i]=null;
-	 $display("-------------------------------------------------------------------------------------------------\n");
-  end 
-begin 
-	forever begin 
- 		pkt[3]=new;
-		mbx_gen2agt[3].get(pkt[3]);// receiving packts from generator block
-		r2agt_pkt[3]++;//the number of packts received from agent bock
-		$display ("Agent: \t\t \t %0dth packet\t Port[%0d]\n ",r2agt_pkt[3],3);
-		pkt[3].print(1);
-		mbx_agt2drv[3].put(pkt[3]);// put packet on mail box of driver
-		s2drv_pkt[3]++;
-		if (pkt[3].cmd!=0) mbx_agt2scb[3].put(pkt[3]);// put packets on scoreboard mailbox
-	end;
-	//pkt[i]=null;
-	 $display("-------------------------------------------------------------------------------------------------\n");
-  end 
-begin 
-	forever begin 
- 		pkt[4]=new;
-		mbx_gen2agt[4].get(pkt[4]);// receiving packts from generator block
-		r2agt_pkt[4]++;//the number of packts received from agent bock
-		$display ("Agent: \t\t \t %0dth packet\t Port[%0d]\n ",r2agt_pkt[4],4);
-		pkt[4].print(1);
-		mbx_agt2drv[4].put(pkt[4]);// put packet on mail box of driver
-		s2drv_pkt[4]++;
-		if (pkt[4].cmd!=0) mbx_agt2scb[4].put(pkt[4]);// put packets on scoreboard mailbox
-	end;
-	//pkt[i]=null;
-	 $display("-------------------------------------------------------------------------------------------------\n");
-  end
-  
-  
+  trnsfer2scb_drv(1);
+  trnsfer2scb_drv(2);
+  trnsfer2scb_drv(3);
+  trnsfer2scb_drv(4);
+
   join 
   $display("\t\t\t\t Agent Finish\n");
 endtask:Agent::run 
