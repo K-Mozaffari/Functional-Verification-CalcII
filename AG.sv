@@ -12,8 +12,8 @@ import PK::*;
   bit [31:0] r2agt_pkt[1:4]='{default:0};
  
   extern function new(mailbox #(Transaction_Tx) mbx_gen2agt[1:4],mbx_agt2drv[1:4],mbx_agt2scb[1:4]);
-  extern task trnsfer2scb_drv(bit[2:0] no_port);
-  extern task run ;
+  extern task trnsfer2scb_drv(bit[2:0] no_port,bit [31:0] no_pkt);
+  extern task run(bit [31:0] no_pkt) ;
   extern task wrap_up;
 
  endclass:Agent
@@ -25,9 +25,9 @@ import PK::*;
 	this.mbx_agt2scb=mbx_agt2scb;
   endfunction
 //---------------------------------------------------------------------------------
-task Agent::trnsfer2scb_drv(bit[2:0] no_port);
+task Agent::trnsfer2scb_drv(bit[2:0] no_port,bit [31:0] no_pkt);
 
-	forever begin 
+	repeat (no_pkt) begin 
  		pkt[no_port]=new;
 		mbx_gen2agt[no_port].get(pkt[no_port]);// receiving packts from generator block
 		r2agt_pkt[no_port]++;//the number of packts received from agent bock
@@ -43,14 +43,14 @@ task Agent::trnsfer2scb_drv(bit[2:0] no_port);
 endtask:Agent::trnsfer2scb_drv
 
 
-task Agent::run ;
+task Agent::run(bit [31:0] no_pkt) ;
   $display ("\t\t\t\t Agent is run \n");
     
   fork 
-  trnsfer2scb_drv(1);
-  trnsfer2scb_drv(2);
-  trnsfer2scb_drv(3);
-  trnsfer2scb_drv(4);
+  trnsfer2scb_drv(1,no_pkt);
+  trnsfer2scb_drv(2,no_pkt);
+  trnsfer2scb_drv(3,no_pkt);
+  trnsfer2scb_drv(4,no_pkt);
 
   join 
   $display("\t\t\t\t Agent Finish\n");
