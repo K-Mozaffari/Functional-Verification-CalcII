@@ -86,6 +86,7 @@ $display ("The number of packets=%0d",cfg.run_for_n_trans);
 	  chk.wrap_up(); 
 
 	join
+	$finish;
  endtask:Environment::wrap_up
 
 
