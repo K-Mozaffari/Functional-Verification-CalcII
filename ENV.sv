@@ -65,8 +65,8 @@ import CFG::*;
 	fork 
 	  gen.run(cfg.run_for_n_trans);
 $display ("The number of packets=%0d",cfg.run_for_n_trans);
-	  agt.run;
-	  scb.run();
+	  agt.run(cfg.run_for_n_trans);
+	  scb.run(cfg.run_for_n_trans);
 	  drv.run(buffer_size);
 	  $display ("Buffer Size=%0d",buffer_size);
 	  mon.run(cfg.run_for_n_trans);
@@ -79,7 +79,7 @@ $display ("The number of packets=%0d",cfg.run_for_n_trans);
 	fork 
 	  gen.wrap_up();
 	  agt.wrap_up();
-	   //scb.wrap_up();
+	  scb.wrap_up();
 	  drv.wrap_up();
 	  mon.wrap_up();
 	  
