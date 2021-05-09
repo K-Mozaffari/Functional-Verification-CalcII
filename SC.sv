@@ -10,9 +10,9 @@ import PK::*;
 	
 	extern function new(mailbox #(Transaction_Tx) mbx_agt2scb[1:4],mbx_scb2chk[1:4]);
 	extern function void gen_expected_result( Transaction_Tx s);
-	extern task  exp_trans(bit[2:0] no_port);
-	extern task run();
-	//extern task wrap_up;
+	extern task  exp_trans(bit[2:0] no_port,bit [31:0] no_pkt);
+	extern task run(bit [31:0] no_pkt);
+	extern task wrap_up;
 
   endclass:Scoreboard
 //==================================================================
@@ -23,41 +23,41 @@ this.mbx_scb2chk=mbx_scb2chk;
 endfunction 
 
 
-task Scoreboard::exp_trans(bit[2:0] no_port);
-		forever begin 
+task Scoreboard::exp_trans(bit[2:0] no_port,bit [31:0] no_pkt);
+		repeat (no_pkt) begin 
 			r_pkt[no_port]=new;
 			mbx_agt2scb[no_port].get(r_pkt[no_port]);// receiving packts from generator block
 			gen_expected_result(r_pkt[no_port]);
 			e_pkt[no_port]=r_pkt[no_port].copy;
 			mbx_scb2chk[no_port].put(e_pkt[no_port]);// put packet on mail box of driver
 			s2drv_pkt[no_port]++;
-		end;
+		end ;
 		
 endtask:Scoreboard::exp_trans
 
 
-task Scoreboard:: run();
+task Scoreboard:: run(bit [31:0] no_pkt);
  
  
     $display ("\t\t\t\t Scoreboard is run\n");
 	fork 
-		exp_trans(1);
-		exp_trans(2);
-		exp_trans(3);
-		exp_trans(4);
+		exp_trans(1,no_pkt);
+		exp_trans(2,no_pkt);
+		exp_trans(3,no_pkt);
+		exp_trans(4,no_pkt);
 	join
 	$display ("\t\t\t\t Scoreboard finish");
 	$display("---------------------------------------------------------------------\n");
 endtask:Scoreboard:: run
 
 
- /*task  Scoreboard::wrap_up;
+ task  Scoreboard::wrap_up;
 	$display("\t\t\t\tScoreboard Wrap_Up\n");
- 	foreach (size[i])    $display("\t Scoreboard::Port[%0d] %0d packets were in Scoreboard ",i,size[i]);
-	foreach (scb_pkt[i]) $display("\t Scoreboard::Port[%0d] %0d packets are  in Scoreboard ",i,scb_pkt[i].size);
+ 	foreach (mbx_scb2chk[i])    $display("\t Scoreboard::Port[%0d] %0d packets are remaied in Scoreboard mailbox ",i,mbx_scb2chk[i].num());
+
 	$display("---------------------------------------------------------------------\n");
  endtask: Scoreboard::wrap_up
-*/
+
 function void Scoreboard::gen_expected_result( Transaction_Tx s);
 
 	  s.tag_out=s.req_tag_in;
