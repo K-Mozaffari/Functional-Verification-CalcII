@@ -87,7 +87,7 @@ endfunction:Checker::check
 	
      
     $display("\t\t\t Checker is finish\n");
-	$finish;
+	
   endtask:Checker::run 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
