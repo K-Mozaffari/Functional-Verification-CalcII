@@ -3,7 +3,7 @@
 program automatic test7(calc2_bus.TB bus);
 import ENV::*;
 import CFG::*;
-  Environment env;
+import PK::*; 
 task reset;
 bus.reset=1'b1;
 #300ns;
@@ -11,61 +11,58 @@ bus.reset=1'b0;
 #2000ns;
 endtask:reset
 
+
+ class my_trans extends Transaction_Tx;
+
+	
+	constraint c_op1 {op1 inside {[1:32'hfffffffe]};}
+ 	constraint c_tag {req_tag_in inside {[1:3]};}
+ 
+
+endclass
+
+ Environment env;
+ my_trans newblueprint[1:4];
+
+
   initial begin 
   $display("###################### TEST CASE 7 ######################");
-reset;
+	 reset;
+
 	 env=new(bus );
 	 env.cfg.min_cfg=1 ;
-	 env.cfg.max_cfg=20 ;
-	  env.gen_cfg;
+	 env.cfg.max_cfg=50 ;
+	 env.gen_cfg;
 	 env.build;
 //---------------------------------------------------------------------------------
   begin 
-    env.gen.build;
-//Test refrence number 8
-    for (int i=1;i<5;i++) begin 
-        	env.gen.blueprint[i].constraint_mode(0);
-        	env.gen.blueprint[i].cmd_dist.constraint_mode(1);
-        	env.gen.blueprint[i].c_op1.constraint_mode(1);
-        	env.gen.blueprint[i].c_op2.constraint_mode(1);
-        	env.gen.blueprint[i].req_tag_in.rand_mode(0);
-        	env.gen.blueprint[i].req_tag_in=1;
-        	env.gen.blueprint[i].c_delay.constraint_mode(1);
-        	
-
-		env.gen.blueprint[i].w_invalid=0;
-		env.gen.blueprint[i].w_delay_insert=0;
-		
-	end
-	
-	
-
-		env.gen.blueprint[1].min_op2=0;
-		env.gen.blueprint[1].max_op2=0;
-		env.gen.blueprint[1].w_shl=100;
-		
-		env.gen.blueprint[2].min_op2=0;
-		env.gen.blueprint[2].max_op2=0;
-		env.gen.blueprint[2].w_shr=100;
-		
-		env.gen.blueprint[3].min_op2=32'hFFFFFFFF;
-		env.gen.blueprint[3].max_op2=32'hFFFFFFFF;
-		env.gen.blueprint[3].w_shl=100;
-		
-		env.gen.blueprint[4].min_op2=32'hFFFFFFFF;
-		env.gen.blueprint[4].max_op2=32'hFFFFFFFF;
-		env.gen.blueprint[4].w_shr=100;
-		
-
-    end
-
+  
  
-  env.buffer_size=1;
-   env.run;
-//--------------------------------------------------------------------------------- 
-    
+ 	foreach (newblueprint[i]) newblueprint[i] =  new;
+	foreach (newblueprint[i]) begin 
+		newblueprint[i].op2.rand_mode(0) ;
+		newblueprint[i].cmd.rand_mode(0) ;
+	end;
+	
+	 newblueprint[1].op2=0;
+	 newblueprint[1].cmd=4'b0101;//shift left
+	 
+	 newblueprint[2].op2=0;
+	 newblueprint[2].cmd=4'b0110;//shift right
+	 
+	 newblueprint[3].op2=32'hFFFFFFFF;
+	 newblueprint[3].cmd=4'b0101;//shift right
+	 
+	 newblueprint[4].op2=32'hFFFFFFFF;
+	 newblueprint[4].cmd=4'b0110;//shift right
 
+	foreach (newblueprint[i]) env.gen.blueprint[i]=newblueprint[i];
+
+  end 
+  //--------------------------------------------------------------------------------- 
+    env.run;
     env.wrap_up;
  end
+
 endprogram
 
