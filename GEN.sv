@@ -19,12 +19,14 @@ endclass:Generator
 
  function Generator::new(mailbox #(Transaction_Tx) mbx_gen2agt[1:4]);
  	this.mbx_gen2agt=mbx_gen2agt;
+	
+	
   endfunction
 
 
 function void Generator::build; //
-bit [31:0] temp_global;
-bit [31:0]  temp_seed;
+	bit [31:0] temp_global;
+	bit [31:0]  temp_seed;
 	temp_global=$urandom(global_seed);
 	foreach (seed[i]) seed[i]=$urandom_range(1000,0);
 	foreach (blueprint[i]) temp_seed=$urandom(seed[i]);
