@@ -42,6 +42,9 @@ endclass
 	foreach (newblueprint[i]) begin 
 		newblueprint[i].op2.rand_mode(0) ;
 		newblueprint[i].cmd.rand_mode(0) ;
+		newblueprint[i].delay_on.rand_mode(0);
+		newblueprint[i].delay_on=0;
+	 
 	end;
 	
 	 newblueprint[1].op2=0;
