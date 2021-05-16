@@ -39,7 +39,11 @@ endclass
   
  
  	foreach (newblueprint[i]) newblueprint[i] =  new;
-
+	foreach(newblueprint[i]) 
+		begin 
+			newblueprint[i].delay_on.rand_mode(0);
+			newblueprint[i].delay_on=0;
+	end;
  	foreach (newblueprint[i])newblueprint[i].w_invalid=100;
 		
 	foreach (newblueprint[i]) env.gen.blueprint[i]=newblueprint[i];
