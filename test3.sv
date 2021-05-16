@@ -43,6 +43,10 @@ endclass
   
  
  	foreach (newblueprint[i]) newblueprint[i] =  new;
+		foreach(newblueprint[i]) begin 
+	newblueprint[i].delay_on.rand_mode(0);
+	newblueprint[i].delay_on=0;
+	end;
  	foreach (newblueprint[i]) 
 		begin 
 			newblueprint[i].w_add=50;
