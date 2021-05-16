@@ -62,7 +62,8 @@ endclass
 	foreach (newblueprint[i]) env.gen.blueprint[i]=newblueprint[i];
 
   end 
-  //--------------------------------------------------------------------------------- 
+  //---------------------------------------------------------------------------------
+env.buffer_size=1;  
     env.run;
     env.wrap_up;
  end
