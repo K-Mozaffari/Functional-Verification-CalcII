@@ -15,7 +15,7 @@ import CFG::*;
 	Monitor		mon;
 	Checker		chk;
 	Config		cfg;
-	bit [3:0]buffer_size=4;
+	bit [3:0]buffer_size;
 	event done [1:4];
 	virtual calc2_bus.TB bus;
 	mailbox #(Transaction_Tx) mbx_gen2agt[1:4];
