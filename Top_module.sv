@@ -1,7 +1,7 @@
 module top;
 
 
-parameter Test_Case =7;//Please enter the numbet of test case 
+parameter Test_Case =8;//Please enter the numbet of test case 
 
 
 bit clk=1'b0;
