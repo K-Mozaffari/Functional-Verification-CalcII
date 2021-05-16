@@ -44,7 +44,10 @@ endclass
   
  
  	foreach (newblueprint[i]) newblueprint[i] =  new;
-	
+	foreach(newblueprint[i]) begin 
+		newblueprint[i].delay_on.rand_mode(0);
+		newblueprint[i].delay_on=0;
+	end;
 		newblueprint[1].sum=0; 
 		newblueprint[1].max_op1=1;
 		newblueprint[1].max_op2=32'hFFFFFFFF;
